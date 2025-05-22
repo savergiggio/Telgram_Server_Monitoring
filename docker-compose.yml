@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  server-monitor:
+    build: .
+    ports:
+      - "8181:5000"
+    volumes:
+      - /var/log:/host/var/log:ro
+      - /proc:/host/proc:ro
+      - /tmp:/tmp  # Aggiunto per consentire la persistenza dei file di monitoraggio
+      - /home/loki/plex:/home/loki/plex  # Monta il disco sdb2 in sola lettura
+      - /home/loki/nexty:/home/loki/nexty:ro  # Monta il disco sdb1 in sola lettura
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Monta il socket Docker per accedere ai container
+    restart: always
+    cap_add:
+      - NET_ADMIN  # Aggiunto per consentire l'accesso a informazioni di rete
+    network_mode: "host"  # Permette al container di accedere direttamente alla rete dell'host
